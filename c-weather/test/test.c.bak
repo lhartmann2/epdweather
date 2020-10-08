@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <cweather.h>
+
+int main(int argc, char *argv[])
+{
+	struct c_weather_data *wdata;
+
+	if (argc < 2) {
+		fprintf(stderr, "Usage: test <city>\n");
+		exit(EXIT_FAILURE);
+	}
+
+	wdata = c_weather_get_data(argv[1]);
+	if (!wdata)
+		exit(EXIT_FAILURE);
+
+	printf("Coordinates\n");
+	printf("\tLatitude    : %s\n", wdata->lat);
+	printf("\tLongitude   : %s\n", wdata->lon);
+	printf("Weather\n");
+	printf("\tConditions  : %s\n", wdata->conditions);
+	printf("\tTemperature : %s °C\n", wdata->temp);
+	printf("\tPressure    : %s hPa\n", wdata->pressure);
+	printf("\tHumidity    : %s%%\n", wdata->humidity);
+
+	c_weather_free(wdata);
+
+	exit(EXIT_SUCCESS);
+}
