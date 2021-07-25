@@ -43,6 +43,11 @@ size_t write_to_buffer(void *data, size_t size, size_t nmemb, void *pointer)
 char *get_weather_data()
 {
 	int done = 0;
+	// Allocate an empty buffer that will hold the http get data
+	struct Buffer buffer;
+
+	buffer.memory = NULL;
+	buffer.size = 0;
 	
 	do {
 		curl_global_init(CURL_GLOBAL_ALL);
@@ -55,12 +60,6 @@ char *get_weather_data()
 		memset(url, 0, length);
 
 		strcat(url, base_url);
-
-		// Allocate an empty buffer that will hold the http get data
-		struct Buffer buffer;
-
-		buffer.memory = NULL;
-		buffer.size = 0;
 
 		CURL *handle;
 		int result;
