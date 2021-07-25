@@ -42,7 +42,7 @@ size_t write_to_buffer(void *data, size_t size, size_t nmemb, void *pointer)
  */
 char *get_weather_data()
 {
-	bool done = false;
+	int done = 0;
 	
 	do {
 		curl_global_init(CURL_GLOBAL_ALL);
@@ -84,13 +84,13 @@ char *get_weather_data()
 				buffer.memory = NULL;
 			}
 		} else {
-			done = true;
+			done = 1;
 		}
 
 		free(url);
 		curl_easy_cleanup(handle);
 		
-	} while(!done);
+	} while(done == 0);
 
 	return buffer.memory;
 };
