@@ -42,48 +42,55 @@ size_t write_to_buffer(void *data, size_t size, size_t nmemb, void *pointer)
  */
 char *get_weather_data()
 {
-	curl_global_init(CURL_GLOBAL_ALL);
+	bool done = false;
+	
+	do {
+		curl_global_init(CURL_GLOBAL_ALL);
 
-	// Build the url
-	char base_url[] = "https://api.openweathermap.org/data/2.5/weather?appid=00993aebe5a9102178f51be3ee8934a7&units=imperial&q=55901";
-	char length = strlen(base_url);
-	char *url = malloc(sizeof(char) * length + 1);
+		// Build the url
+		char base_url[] = "https://api.openweathermap.org/data/2.5/weather?appid=00993aebe5a9102178f51be3ee8934a7&units=imperial&q=55901";
+		char length = strlen(base_url);
+		char *url = malloc(sizeof(char) * length + 1);
 
-	memset(url, 0, length);
+		memset(url, 0, length);
 
-	strcat(url, base_url);
+		strcat(url, base_url);
 
-	// Allocate an empty buffer that will hold the http get data
-	struct Buffer buffer;
+		// Allocate an empty buffer that will hold the http get data
+		struct Buffer buffer;
 
-	buffer.memory = NULL;
-	buffer.size = 0;
+		buffer.memory = NULL;
+		buffer.size = 0;
 
-	CURL *handle;
-	int result;
+		CURL *handle;
+		int result;
 
-	handle = curl_easy_init();
+		handle = curl_easy_init();
 
-	// Set curl options
-	curl_easy_setopt(handle, CURLOPT_URL, url);
-	curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_to_buffer);
-	curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)&buffer);
-	result = curl_easy_perform(handle);
+		// Set curl options
+		curl_easy_setopt(handle, CURLOPT_URL, url);
+		curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_to_buffer);
+		curl_easy_setopt(handle, CURLOPT_WRITEDATA, (void *)&buffer);
+		result = curl_easy_perform(handle);
 
-	if (result != CURLE_OK) {
-		//originally errmsg()
-		printf(
-		       "A problem occurred during the HTTP CALL to:\n\n%s\n\nWith the following error: %s\n\n",
-		     url, curl_easy_strerror(result));
+		if (result != CURLE_OK) {
+			//originally errmsg()
+			printf(
+				   "A problem occurred during the HTTP CALL to:\n\n%s\n\nWith the following error: %s\n\n",
+				 url, curl_easy_strerror(result));
 
-		if (buffer.memory) {
-			free(buffer.memory);
-			buffer.memory = NULL;
+			if (buffer.memory) {
+				free(buffer.memory);
+				buffer.memory = NULL;
+			}
+		} else {
+			done = true;
 		}
-	}
 
-	free(url);
-	curl_easy_cleanup(handle);
+		free(url);
+		curl_easy_cleanup(handle);
+		
+	} while(!done);
 
 	return buffer.memory;
 };
