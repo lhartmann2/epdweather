@@ -54,10 +54,7 @@ int main(void)
 
     // 2.Drawing on the image
     printf("Writing to screen...\r\n");
-    Paint_DrawString_EN(10, 20, "Failed to", &Font12, WHITE, BLACK);
-	Paint_DrawString_EN(10,34, "	Connect", &Font12, WHITE, BLACK);
-
-	Paint_DrawString_EN(10,64, "Rebooting...", &Font12, WHITE, BLACK);
+    Paint_DrawString_EN(10, 20, "Connecting...", &Font12, WHITE, BLACK);
 	
     EPD_Display(BlackImage);
     DEV_Delay_ms(500);
